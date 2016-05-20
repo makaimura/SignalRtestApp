@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Chat Service powered by SignalR</title>
+	<meta charset="utf-8" />
+    <script src="Scripts/jquery-1.6.4.min.js"></script>
+    <script src="Scripts/jquery.signalR-2.2.0.min.js"></script>
+    <script>
+        $(function () {
+            var connection = $.hubConnection();
+            var echo = connection.createHubProxy("Echo");
+            echo.on("Receive", function (text) {
+                $("#list").append("<li>" + text + "</li>");
+            });
+            $("#send").click(function () {
+                var message = $("#message").val();
+                echo.invoke("Send", message).done(function () {
+                    $("#message").val("");
+                });
+            });
+            connection.start(function () {
+                $("#send").prop("disabled", false);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div>
+        <input type="text" id="message" />
+        <input type="button" id="send" value="Submit" disabled="disabled" />
+        <ul id="list"></ul>
+        &copy;
+    </div>
+</body>
+</html>
